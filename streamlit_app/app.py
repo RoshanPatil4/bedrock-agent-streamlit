@@ -161,18 +161,22 @@ for index, chat in enumerate(reversed(st.session_state['history'])):
 # Example Prompts Section
 # Creating a list of prompts for the Knowledge Base section
 knowledge_base_prompts = [
-    {"Prompt": "Give me a summary of financial market developments and open market operations in January 2023"},
-    {"Prompt": "Tell me the participants view on economic conditions and economic outlook"},
-    {"Prompt": "Provide any important information I should know about consumer inflation, or rising prices"},
-    {"Prompt": "Tell me about the Staff Review of the Economic & financial Situation"}
+    {"Prompt": "What is the maximum withdrawal limit for savings accounts as per RBI guidelines?"},
+    {"Prompt": "Explain the RBI rules on premature withdrawal of fixed deposits."},
+    {"Prompt": "What are the KYC requirements for opening a bank account in India?"},
+    {"Prompt": "Give me a summary of RBI's policy on digital lending."},
+    {"Prompt": "Are there RBI rules about ATM transaction limits or charges?"}
 ]
 
 # Creating a list of prompts for the Action Group section
 action_group_prompts = [
-    {"Prompt": "Create a portfolio with 3 companies in the real estate industry"},
-    {"Prompt": "Create a portfolio of 4 companies that are in the technology industry"},
-    {"Prompt": "Return me information on the company on TechStashNova Inc."}
+    {"Prompt": "Calculate EMI for a ₹5 lakh loan at 10% interest for 5 years."},
+    {"Prompt": "What will be the total interest paid on a ₹2 lakh loan at 9.5% for 3 years?"},
+    {"Prompt": "Calculate loan eligibility for ₹50,000 monthly salary."},
+    {"Prompt": "I want to apply for a home loan. What documents are needed?"},
+    {"Prompt": "Create a summary of my loan repayments over 12 months."}
 ]
+
 st.markdown("---")
 # --- Example Prompts Section ---
 st.markdown("## Example Knowledge Base Queries")
