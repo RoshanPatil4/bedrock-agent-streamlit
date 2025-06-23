@@ -195,9 +195,47 @@ def decode_response(response):
 
     return captured_string, final_response
 
+import re
+def extract_citations_from_trace(trace_text):
+    """
+    Extract citations (document title and S3 link) from the trace data.
+    This function looks for lines with patterns like:
+    'documentTitle' and 'location'
+    """
+    citations = []
+
+    try:
+        # Find all document references in the trace using regex
+        doc_blocks = re.findall(r'\{[^{}]*documentTitle[^{}]*\}', trace_text)
+
+        for block in doc_blocks:
+            title_match = re.search(r'documentTitle[\'"]?\s*:\s*[\'"]([^\'"]+)[\'"]', block)
+            link_match = re.search(r'documentLocation[\'"]?\s*:\s*[\'"]([^\'"]+)[\'"]', block)
+
+            if title_match:
+                title = title_match.group(1)
+            else:
+                title = "Untitled Document"
+
+            if link_match:
+                link = link_match.group(1)
+            else:
+                link = "#"
+
+            citations.append({
+                "documentTitle": title,
+                "documentLink": link
+            })
+
+    except Exception as e:
+        print("Error extracting citations:", e)
+
+    return citations
+
 # ---------------------------------------------------------------------
 # LAMBDA HANDLER (if used in AWS Lambda)
 # ---------------------------------------------------------------------
+
 def lambda_handler(event, context):
     """
     AWS Lambda entry point that handles incoming events, obtains a response from
@@ -220,10 +258,17 @@ def lambda_handler(event, context):
     
     try:
         response, trace_data = askQuestion(question, url, endSession)
+        citations = extract_citations_from_trace(trace_data)
+
         return {
             "status_code": 200,
-            "body": json.dumps({"response": response, "trace_data": trace_data})
+            "body": json.dumps({
+                "response": response,
+                "trace_data": trace_data,
+                "citations": citations
+            })
         }
+
     except Exception as e:
         return {
             "status_code": 500,
