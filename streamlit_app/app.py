@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image, ImageOps, ImageDraw
 
 # Streamlit page configuration
-st.set_page_config(page_title="Banking Buddy", page_icon="🏦", layout="wide")
+st.set_page_config(page_title="Cloud Policy Assistant", page_icon="☁️", layout="wide")
 
 # Function to crop image into a circle
 def crop_to_circle(image):
@@ -17,13 +17,13 @@ def crop_to_circle(image):
     return result
 
 # Title
-st.markdown("<h1 style='text-align:center;'>Banking Buddy</h1>", unsafe_allow_html=True)
-st.markdown("<h5 style='text-align:center; color:silver'>Ask anything about banking and get answers with cited sources.</h5>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align:center;'>Cloud Policy Assistant</h1>", unsafe_allow_html=True)
+st.markdown("<h5 style='text-align:center; color:silver'>Ask about cloud, IT, or policy guidelines from RBI & MeitY.</h5>", unsafe_allow_html=True)
 st.markdown("---")
 
 prompt = st.text_area(
     "Ask your question",
-    placeholder="e.g., What is the penalty for premature withdrawal of a fixed deposit?",
+    placeholder="e.g., What are RBI’s guidelines for cloud outsourcing?",
     height=68,  # starting height
     max_chars=2000
 )
@@ -48,9 +48,9 @@ st.markdown("---")
 # --- Sidebar (context + instructions) ---
 with st.sidebar:
     st.header("How it works")
-    st.write("1️⃣ You ask a banking-related question.")
-    st.write("2️⃣ The Banking Buddy queries our policy document knowledge base.")
-    st.write("3️⃣ It returns an answer with cited sources.")
+    st.write("1️⃣ You ask a question about RBI/MeitY cloud or IT policy.")
+    st.write("2️⃣ The assistant searches the uploaded government policy documents.")
+    st.write("3️⃣ It gives an answer with proper source citations.")
     st.markdown("---")
     st.header("Trace Data")
 
@@ -158,38 +158,30 @@ for index, chat in enumerate(reversed(st.session_state['history'])):
             # Generate a unique key for each answer text area
             st.text_area("Buddy:", value=chat["answer"], height=100, key=f"answer_{index}")
 
-# Example Prompts Section
+# Example Prompts Section (Cloud & Policy-Focused)
 # Creating a list of prompts for the Knowledge Base section
 knowledge_base_prompts = [
-    {"Prompt": "What is the maximum withdrawal limit for savings accounts as per RBI guidelines?"},
-    {"Prompt": "Explain the RBI rules on premature withdrawal of fixed deposits."},
-    {"Prompt": "What are the KYC requirements for opening a bank account in India?"},
-    {"Prompt": "Give me a summary of RBI's policy on digital lending."},
-    {"Prompt": "Are there RBI rules about ATM transaction limits or charges?"}
+    {"Prompt": "What are RBI's guidelines for outsourcing cloud services?"},
+    {"Prompt": "What does MeitY say about developing cloud-ready applications?"},
+    {"Prompt": "Explain RBI's requirements for setting up a Security Operations Center (SOC)."},
+    {"Prompt": "What is the role of the IT Strategy Committee in banks?"},
+    {"Prompt": "Give a summary of the e-Kranti framework under the Digital India initiative."}
 ]
 
-# Creating a list of prompts for the Action Group section
-action_group_prompts = [
-    {"Prompt": "Calculate EMI for a ₹5 lakh loan at 10% interest for 5 years."},
-    {"Prompt": "What will be the total interest paid on a ₹2 lakh loan at 9.5% for 3 years?"},
-    {"Prompt": "Calculate loan eligibility for ₹50,000 monthly salary."},
-    {"Prompt": "I want to apply for a home loan. What documents are needed?"},
-    {"Prompt": "Create a summary of my loan repayments over 12 months."}
-]
+# Creating a list of prompts for the Action Group section (leave empty or remove if not used)
+action_group_prompts = []
 
 st.markdown("---")
 # --- Example Prompts Section ---
-st.markdown("## Example Knowledge Base Queries")
+st.markdown("## Example Queries")
 
 # Display prompts in bullet format instead of table (more readable)
 for item in knowledge_base_prompts:
     st.markdown(f"- **{item['Prompt']}**")
 
-st.markdown("---")
-
-# --- Action Group Test Prompts ---
-st.markdown("## Example Action Group Queries")
-
-
-for item in action_group_prompts:
-    st.markdown(f"- **{item['Prompt']}**")
+# Optional: Skip if action group is disabled
+if action_group_prompts:
+    st.markdown("---")
+    st.markdown("## ⚙️ Example Action Queries")
+    for item in action_group_prompts:
+        st.markdown(f"- **{item['Prompt']}**")
