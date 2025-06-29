@@ -1,4 +1,4 @@
-import invoke_agent as agenthelper
+from invoke_agent import invoke
 import streamlit as st
 import json
 import pandas as pd
@@ -77,11 +77,7 @@ def format_response(response_body):
 
 # Handling user input and responses
 if submit_button and prompt:
-    event = {
-        "sessionId": "MYSESSION",
-        "question": prompt
-    }
-    response = agenthelper.lambda_handler(event, None)
+    response = invoke(prompt)
     
     try:
         # Parse the JSON string
@@ -119,12 +115,7 @@ if submit_button and prompt:
 
 if end_session_button:
     st.session_state['history'].append({"question": "Session Ended", "answer": "Thank you for using AnyCompany Support Agent!"})
-    event = {
-        "sessionId": "MYSESSION",
-        "question": "placeholder to end session",
-        "endSession": True
-    }
-    agenthelper.lambda_handler(event, None)
+    st.info("Session has been reset.")
     st.session_state['history'].clear()
 
 # Display conversation history
