@@ -79,22 +79,14 @@ def format_response(response_body):
 if submit_button and prompt:
     response = invoke(prompt)
     
-    try:
-        # Parse the JSON string
-        if response and 'body' in response and response['body']:
-            response_data = json.loads(response['body'])
-            print("TRACE & RESPONSE DATA ->  ", response_data)
-        else:
-            print("Invalid or empty response received")
-    except json.JSONDecodeError as e:
-        print("JSON decoding error:", e)
-        response_data = None 
-    
-    try:
-        all_data = format_response(response_data['response'])
-        the_response = response_data.get('trace_data', '')
+    response_data = response  # Already a parsed dict
+    print("TRACE & RESPONSE DATA ->", response_data)
 
-        # Add citations at the end of the response
+    try:
+        all_data = format_response(response_data.get("trace", ""))  # Display trace in sidebar
+        the_response = response_data.get("message", "No response received.")
+
+        # Add citations at the end of the assistant message
         citations = response_data.get('citations', [])
         if citations:
             the_response += "\n\n### 📚 Sources:\n"
@@ -102,6 +94,7 @@ if submit_button and prompt:
                 title = source.get("documentTitle", "Untitled Document")
                 link = source.get("documentLink", "#")
                 the_response += f"- [{title}]({link})\n"
+
     except:
         all_data = "..."
         the_response = "Apologies, but an error occurred. Please rerun the application"
