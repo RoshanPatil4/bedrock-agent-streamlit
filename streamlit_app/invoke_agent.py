@@ -1,8 +1,8 @@
 import boto3
 import uuid
 
-agentId = "your-agent-id"
-agentAliasId = "your-alias-id"
+agentId = "your-agent-id"         # ✅ your real agent ID
+agentAliasId = "your-alias-id"    # ✅ your real alias ID
 region = "us-west-2"
 
 def invoke(query):
@@ -10,6 +10,7 @@ def invoke(query):
     session_id = str(uuid.uuid4())
 
     try:
+        # Start agent invocation
         response_stream = client.invoke_agent(
             agentId=agentId,
             agentAliasId=agentAliasId,
@@ -17,15 +18,23 @@ def invoke(query):
             inputText=query
         )
 
-        # ✅ Now read the streaming response
+        # ✅ Extract completion from EventStream correctly
         full_response = ""
-        for chunk in response_stream["completion"]:
-            if hasattr(chunk, "completion"):
-                full_response += chunk.completion
+        for event in response_stream["completion"]:
+            event_type = getattr(event, "event_type", None)
+
+            if event_type == "completion":
+                full_response += getattr(event, "completion", "")
+            elif event_type == "trace":
+                # You can log trace if needed
+                pass
+
+        if not full_response:
+            full_response = "⚠️ Agent returned no content. Check fallback or KB linkage."
 
         return {
-            "message": full_response or "No response received.",
-            "trace": "(Trace not available in this version)",
+            "message": full_response,
+            "trace": "(Trace not captured in this version)",
             "citations": []
         }
 
@@ -33,7 +42,7 @@ def invoke(query):
         import traceback
         traceback.print_exc()
         return {
-            "message": "Apologies, there was an error while processing your request.",
+            "message": "❌ Error occurred while processing your request.",
             "trace": str(e),
             "citations": []
         }
