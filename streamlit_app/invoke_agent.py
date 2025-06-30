@@ -1,8 +1,8 @@
 import boto3
 import uuid
 
-agentId = "your-agent-id"         # ✅ your real agent ID
-agentAliasId = "your-alias-id"    # ✅ your real alias ID
+agentId = "your-agent-id"    
+agentAliasId = "your-alias-id"
 region = "us-west-2"
 
 def invoke(query):
