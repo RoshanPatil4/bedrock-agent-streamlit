@@ -1,4 +1,4 @@
-from invoke_agent import invoke
+from invoke_agent import lambda_handler as agenthelper
 import streamlit as st
 import json
 import pandas as pd
@@ -77,14 +77,36 @@ def format_response(response_body):
 
 # Handling user input and responses
 if submit_button and prompt:
-    response = invoke(prompt)
-    
-    response_data = response  # Already a parsed dict
-    print("TRACE & RESPONSE DATA ->", response_data)
+    event = {
+        "sessionId": "mysession-123",
+        "question": prompt,
+        "endSession": False
+    }
+
+    response = agenthelper(event, None)
 
     try:
-        all_data = format_response(response_data.get("trace", ""))  # Display trace in sidebar
-        the_response = response_data.get("message", "No response received.")
+        if response and 'body' in response:
+            response_data = json.loads(response['body'])
+            print("TRACE & RESPONSE DATA ->", response_data)
+
+            all_data = format_response(response_data.get("trace_data", ""))
+            the_response = response_data.get("response", "No response received.")
+
+            citations = response_data.get('citations', [])
+            if citations:
+                the_response += "\n\n### 📚 Sources:\n"
+                for source in citations:
+                    title = source.get("documentTitle", "Untitled Document")
+                    link = source.get("documentLink", "#")
+                    the_response += f"- [{title}]({link})\n"
+        else:
+            all_data = "..."
+            the_response = "Apologies, but an error occurred."
+
+    except Exception as e:
+        all_data = "..."
+        the_response = f"Exception occurred: {e}"
 
         # Add citations at the end of the assistant message
         citations = response_data.get('citations', [])
