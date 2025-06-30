@@ -15,7 +15,7 @@ def invoke(query):
             agentId=agentId,
             agentAliasId=agentAliasId,
             sessionId=session_id,
-            input={"text": query}
+            inputText=query
         )
 
         completion = response.get("completion", "No response received.")
