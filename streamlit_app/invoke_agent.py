@@ -87,6 +87,7 @@ def decode_response(response):
 
     string = ""
     for line in response.iter_content():
+        print("Raw chunk:", line)
         try:
             string += line.decode(encoding='utf-8')
         except:
