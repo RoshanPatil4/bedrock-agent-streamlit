@@ -101,7 +101,7 @@ if submit_button and prompt:
  
 
     # Use trace_data and formatted_response as needed
-    st.sidebar.text_area("", value=all_data, height=300)
+    st.sidebar.text_area("Agent Trace (raw)", value=all_data, height=300, label_visibility="collapsed")
     st.session_state['history'].append({"question": prompt, "answer": the_response})
     st.session_state['trace_data'] = the_response
   
